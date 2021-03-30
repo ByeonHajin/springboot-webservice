@@ -5,9 +5,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+
+import static org.hamcrest.Matchers.is;
 import org.springframework.test.web.servlet.ResultActions;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 //JUnit - java에서 테스트 코드 작성을 도와주는 프레임워크
@@ -24,5 +28,18 @@ public class HelloControllerTest {
 
         mvc.perform(get("/hello")).andExpect(status().isOk())//결과 검증(status 검증)
                 .andExpect(content().string(hello));//(본문의 내용 검증)
+    }
+
+    @Test
+    public void helloDto가_리턴된다() throws Exception {
+        String name = "hello";
+        int amount = 1000;
+
+        mvc.perform(get("/hello/dto").param("name", name)
+                .param("amount",String.valueOf(amount)))//param은 String만 허용, 숫자는 문자열로 변경해야만 등록가능
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", is(name)))
+                //json 응답값을 필드별로 검증할 수 있는 메소드, $를 기준으로 필드명 명시
+                .andExpect(jsonPath("$.amount", is(amount)));
     }
 }
