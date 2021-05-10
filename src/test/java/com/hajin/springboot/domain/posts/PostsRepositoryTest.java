@@ -40,6 +40,8 @@ public class PostsRepositoryTest {
         assertThat(posts.getContent()).isEqualTo(content);
     }
 
+
+
     @Test
     public void BaseTimeEntity_등록() {
         LocalDateTime now = LocalDateTime.of(2021,4,5,0,0,0);
