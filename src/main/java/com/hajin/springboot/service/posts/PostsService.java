@@ -1,12 +1,16 @@
 package com.hajin.springboot.service.posts;
 import com.hajin.springboot.domain.posts.Posts;
 import com.hajin.springboot.domain.posts.PostsRepository;
+import com.hajin.springboot.web.dto.PostsListResponseDto;
 import com.hajin.springboot.web.dto.PostsResponseDto;
 import com.hajin.springboot.web.dto.PostsSaveRequestDto;
 import com.hajin.springboot.web.dto.PostsUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor //생성자 생성 (Autowired 안써도 됨) // bean 주입 방식 - 1. @Autowired 2. setter 3. 생성
 @Service
@@ -29,5 +33,11 @@ public class PostsService {
     public PostsResponseDto findById (Long id) {
         Posts entity = postsRepository.findById(id).orElseThrow(()->new IllegalArgumentException("해당 사용자가 없습니다. id ="+id));
         return new PostsResponseDto(entity);
+    }
+
+    @Transactional(readOnly = true)
+    public List<PostsListResponseDto> findAllDesc(){
+        return postsRepository.findAllDesc().stream().map(PostsListResponseDto::new).collect(Collectors.toList());
+        //PostsListResponseDto::new == posts -> new PostsListResponseDto(posts)
     }
 }
